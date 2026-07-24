@@ -1,0 +1,38 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.139.2",
+    "psycopg2-binary>=2.9.12",
+    "sqlmodel>=0.0.39",
+]
+
+[build-system]
+requires = ["setuptools>=65.5.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.ruff]
+src = ["."]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.9.1",
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "unit: isolated unit tests without framework or database dependencies",
+    "api: API route tests with FastAPI TestClient",
+    "integration: multi-layer integration tests with app + DB wiring",
+    "e2e: docker-compose end-to-end tests across api, db, and worker",
+    "load: high-load tests for throughput and concurrency behavior",
+]

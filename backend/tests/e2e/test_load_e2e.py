@@ -24,7 +24,7 @@ def _wait_for_api(base_url: str, timeout_seconds: int = 120) -> None:
     last_error = None
     while time.time() < deadline:
         try:
-            response = httpx.get(f"{base_url}/jobs/", params={"limit": 1}, timeout=3.0)
+            response = httpx.get(f"{base_url}/jobs", params={"limit": 1}, timeout=3.0)
             if response.status_code == 200:
                 return
             last_error = f"status={response.status_code} body={response.text}"
@@ -55,7 +55,7 @@ def test_job_submission_and_processing_under_load(base_url: str) -> None:
 
     def _create_job(_index: int) -> tuple[int, str | None, str]:
         response = httpx.post(
-            f"{base_url}/jobs/",
+            f"{base_url}/jobs",
             json={
                 "job_type": "image_resize",
                 "payload": {"source": "in.png", "target": "out.png", "seq": _index},
@@ -96,7 +96,7 @@ def test_job_submission_and_processing_under_load(base_url: str) -> None:
     deadline = time.time() + timeout_seconds
     last_metrics = None
     while time.time() < deadline:
-        metrics_response = httpx.get(f"{base_url}/metrics/", timeout=5.0)
+        metrics_response = httpx.get(f"{base_url}/metrics", timeout=5.0)
         assert metrics_response.status_code == 200
         last_metrics = metrics_response.json()
 

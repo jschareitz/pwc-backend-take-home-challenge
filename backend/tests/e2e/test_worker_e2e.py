@@ -12,7 +12,7 @@ def _wait_for_api(base_url: str, timeout_seconds: int = 120) -> None:
     last_error = None
     while time.time() < deadline:
         try:
-            response = httpx.get(f"{base_url}/jobs/", params={"limit": 1}, timeout=3.0)
+            response = httpx.get(f"{base_url}/jobs", params={"limit": 1}, timeout=3.0)
             if response.status_code == 200:
                 return
             last_error = f"status={response.status_code} body={response.text}"
@@ -38,7 +38,7 @@ def test_job_is_processed_by_worker_e2e(base_url: str) -> None:
     _wait_for_api(base_url)
 
     create_response = httpx.post(
-        f"{base_url}/jobs/",
+        f"{base_url}/jobs",
         json={
             "job_type": "image_resize",
             "payload": {"source": "in.png", "target": "out.png"},

@@ -25,7 +25,7 @@ class _RaisingJobService:
 
 def test_create_job_rejects_out_of_range_retries(client: TestClient) -> None:
     response = client.post(
-        "/jobs/",
+        "/jobs",
         json={
             "job_type": JobType.DATA_IMPORT.value,
             "payload": {"file": "import.csv"},
@@ -70,7 +70,7 @@ def test_route_maps_sqlalchemy_error_to_500(client: TestClient) -> None:
     app.dependency_overrides[get_job_service] = lambda: _RaisingJobService()
     try:
         response = client.post(
-            "/jobs/",
+            "/jobs",
             json={
                 "job_type": JobType.IMAGE_RESIZE.value,
                 "payload": {"source": "a.png", "target": "b.png"},

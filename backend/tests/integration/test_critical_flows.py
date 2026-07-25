@@ -12,7 +12,7 @@ pytestmark = pytest.mark.integration
 
 def _create_job(client: TestClient) -> str:
     response = client.post(
-        "/jobs/",
+        "/jobs",
         json={
             "job_type": JobType.IMAGE_RESIZE.value,
             "payload": {"source": "input.png", "target": "output.png"},
@@ -85,7 +85,7 @@ def test_metrics_returns_expected_aggregates(client: TestClient, db_engine) -> N
         session.add(second)
         session.commit()
 
-    response = client.get("/metrics/")
+    response = client.get("/metrics")
 
     assert response.status_code == 200
     body = response.json()
@@ -99,7 +99,7 @@ def test_metrics_returns_expected_aggregates(client: TestClient, db_engine) -> N
 
 def test_empty_payload_is_rejected_with_422(client: TestClient) -> None:
     response = client.post(
-        "/jobs/",
+        "/jobs",
         json={"job_type": JobType.REPORT_GENERATION.value, "payload": {}},
     )
 

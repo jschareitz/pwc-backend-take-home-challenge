@@ -1,7 +1,11 @@
+import logging
+
 from sqlmodel import Session, func, select
 
 from app.db.models import Job
 from app.schemas.jobs import Status
+
+logger = logging.getLogger(__name__)
 
 
 class MetricsService:
@@ -24,7 +28,7 @@ class MetricsService:
 
         row = self.session.exec(statement).one()
 
-        return {
+        metrics = {
             "total_jobs": int(row.total_jobs),
             "pending_jobs": int(row.pending_jobs),
             "processing_jobs": int(row.processing_jobs),
@@ -34,3 +38,7 @@ class MetricsService:
                 row.average_processing_duration_seconds or 0.0
             ),
         }
+        logger.debug(f"Calculated metrics: total={metrics['total_jobs']}, pending={metrics['pending_jobs']}, "
+                     f"processing={metrics['processing_jobs']}, completed={metrics['completed_jobs']}, "
+                     f"failed={metrics['failed_jobs']}")
+        return metrics

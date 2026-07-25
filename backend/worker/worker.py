@@ -23,7 +23,7 @@ def _get_float_env(name: str, default: float) -> float:
     try:
         return float(raw)
     except ValueError:
-        logger.warning("Invalid %s=%r, falling back to %s", name, raw, default)
+        logger.warning(f"Invalid {name}={raw!r}, falling back to {default}")
         return default
 
 
@@ -52,7 +52,7 @@ def process_job(job: Job, session: Session) -> None:
     session.commit()
 
     attempt_duration = random.uniform(MIN_WORK_SECONDS, MAX_WORK_SECONDS)
-    logger.info("Processing job %s for %.2fs", job.id, attempt_duration)
+    logger.info(f"Processing job {job.id} for {attempt_duration:.2f}s")
     time.sleep(attempt_duration)
 
     job.processing_duration_seconds += attempt_duration
@@ -62,26 +62,17 @@ def process_job(job: Job, session: Session) -> None:
         if job.retry_count < job.max_retries:
             job.status = Status.PENDING
             job.finished_at = None
-            logger.info(
-                "Job %s failed, retry %s/%s",
-                job.id,
-                job.retry_count,
-                job.max_retries,
-            )
+            logger.info(f"Job {job.id} failed, retry {job.retry_count}/{job.max_retries}")
         else:
             job.status = Status.FAILED
             job.finished_at = datetime.now(timezone.utc)
-            logger.info(
-                "Job %s permanently failed after %s attempts",
-                job.id,
-                job.retry_count,
-            )
+            logger.info(f"Job {job.id} permanently failed after initial attempt and {job.retry_count} retries")
     else:
         job.status = Status.COMPLETED
         job.error_message = None
         job.result = {"message": "processed", "result_path": f"results/{job.id}/"}
         job.finished_at = datetime.now(timezone.utc)
-        logger.info("Job %s completed", job.id)
+        logger.info(f"Job {job.id} completed")
 
     session.add(job)
     session.commit()
@@ -95,17 +86,17 @@ def run_worker() -> None:
                 job = claim_job(session)
                 if job is None:
                     session.rollback()
-                    logger.debug("No pending jobs, sleeping %ss", POLL_INTERVAL_SECONDS)
+                    logger.debug(f"No pending jobs, sleeping {POLL_INTERVAL_SECONDS}s")
                     time.sleep(POLL_INTERVAL_SECONDS)
                     continue
 
                 process_job(job, session)
             except SQLAlchemyError as error:
-                logger.exception("Database error while processing jobs: %s", error)
+                logger.exception(f"Database error while processing jobs: {error}")
                 session.rollback()
                 time.sleep(POLL_INTERVAL_SECONDS)
             except Exception as error:
-                logger.exception("Unexpected error in worker: %s", error)
+                logger.exception(f"Unexpected error in worker: {error}")
                 session.rollback()
                 time.sleep(POLL_INTERVAL_SECONDS)
 

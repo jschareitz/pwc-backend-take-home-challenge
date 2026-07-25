@@ -12,7 +12,7 @@ router = APIRouter(prefix="/jobs")
 
 
 @router.get(
-    "/",
+    "",
     response_model=List[JobRead],
     status_code=http_status.HTTP_200_OK,
 )
@@ -34,7 +34,7 @@ def get_job(id: UUID, job_service: JobService = Depends(get_job_service)):
 
 
 @router.post(
-    "/",
+    "",
     response_model=JobRead,
     status_code=http_status.HTTP_201_CREATED,
 )

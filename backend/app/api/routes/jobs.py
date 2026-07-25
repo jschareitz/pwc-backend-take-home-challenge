@@ -1,11 +1,10 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 from fastapi import status as http_status
 
 from app.api.deps import get_job_service
-from app.schemas.jobs import Status, JobCreate, JobRead
+from app.schemas.jobs import JobCreate, JobRead, Status
 from app.services.jobs import JobService
 
 router = APIRouter(prefix="/jobs")
@@ -13,7 +12,7 @@ router = APIRouter(prefix="/jobs")
 
 @router.get(
     "",
-    response_model=List[JobRead],
+    response_model=list[JobRead],
     status_code=http_status.HTTP_200_OK,
 )
 def get_jobs(

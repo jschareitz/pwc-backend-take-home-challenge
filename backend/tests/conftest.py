@@ -21,13 +21,13 @@ def db_engine():
     return test_engine
 
 
-def _override_get_session() -> Generator[Session, None, None]:
+def _override_get_session() -> Generator[Session]:
     with Session(test_engine) as session:
         yield session
 
 
 @pytest.fixture(autouse=True)
-def _reset_jobs_table() -> Generator[None, None, None]:
+def _reset_jobs_table() -> Generator[None]:
     SQLModel.metadata.create_all(test_engine)
     with Session(test_engine) as session:
         session.exec(delete(Job))
@@ -36,7 +36,7 @@ def _reset_jobs_table() -> Generator[None, None, None]:
 
 
 @pytest.fixture
-def client(monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, None]:
+def client(monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient]:
     # Prevent startup from touching the production/Postgres engine during tests.
     monkeypatch.setattr(
         "app.main.create_db_and_tables",

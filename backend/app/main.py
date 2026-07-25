@@ -1,17 +1,16 @@
-from contextlib import asynccontextmanager
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.api.routes import jobs
-from app.api.routes import metrics
+from app.api.routes import jobs, metrics
 from app.core.config import settings
 from app.core.exceptions import JobAlreadyStartedException, JobNotFoundException
-from app.db.session import create_db_and_tables
 from app.core.logging_config import setup_logging
+from app.db.session import create_db_and_tables
 
 
 @asynccontextmanager

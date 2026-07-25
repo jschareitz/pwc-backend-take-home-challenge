@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -21,12 +21,12 @@ class JobType(str, Enum):
 
 class JobCreate(BaseModel):
     job_type: JobType
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     max_retries: int = Field(default=3, ge=0, le=10)
 
     @field_validator("payload")
     @classmethod
-    def payload_must_not_be_empty(cls, value: Dict[str, Any]) -> Dict[str, Any]:
+    def payload_must_not_be_empty(cls, value: dict[str, Any]) -> dict[str, Any]:
         if not value:
             raise ValueError("payload must not be empty")
         return value
@@ -35,13 +35,13 @@ class JobCreate(BaseModel):
 class JobRead(BaseModel):
     id: UUID
     job_type: JobType
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     status: Status = Status.PENDING
-    result: Optional[Dict[str, Any]] = None
-    error_message: Optional[str] = None
+    result: dict[str, Any] | None = None
+    error_message: str | None = None
     created_at: datetime
-    started_at: Optional[datetime] = None
-    finished_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    finished_at: datetime | None = None
     retry_count: int = 0
     max_retries: int = 3
     processing_duration_seconds: float = 0.0

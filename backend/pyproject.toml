@@ -21,6 +21,9 @@ include = ["app*"]
 [tool.ruff]
 src = ["."]
 
+[tool.ruff.lint]
+ignore = ["B008"]
+
 [dependency-groups]
 dev = [
     "httpx2>=2.9.1",

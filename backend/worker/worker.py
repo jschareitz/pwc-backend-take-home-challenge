@@ -2,15 +2,15 @@ import logging
 import os
 import random
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session, select
 
+from app.core.logging_config import setup_logging
 from app.db.models import Job
 from app.db.session import engine
 from app.schemas.jobs import Status
-from app.core.logging_config import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ def claim_job(session: Session) -> Job | None:
 
 def process_job(job: Job, session: Session) -> None:
     job.status = Status.PROCESSING
-    job.started_at = datetime.now(timezone.utc)
+    job.started_at = datetime.now(UTC)
     session.add(job)
     session.commit()
 
@@ -67,7 +67,7 @@ def process_job(job: Job, session: Session) -> None:
             )
         else:
             job.status = Status.FAILED
-            job.finished_at = datetime.now(timezone.utc)
+            job.finished_at = datetime.now(UTC)
             logger.info(
                 f"Job {job.id} permanently failed after initial attempt and {job.retry_count} retries"
             )
@@ -75,7 +75,7 @@ def process_job(job: Job, session: Session) -> None:
         job.status = Status.COMPLETED
         job.error_message = None
         job.result = {"message": "processed", "result_path": f"results/{job.id}/"}
-        job.finished_at = datetime.now(timezone.utc)
+        job.finished_at = datetime.now(UTC)
         logger.info(f"Job {job.id} completed")
 
     session.add(job)
@@ -95,12 +95,12 @@ def run_worker() -> None:
                     continue
 
                 process_job(job, session)
-            except SQLAlchemyError as error:
-                logger.exception(f"Database error while processing jobs: {error}")
+            except SQLAlchemyError:
+                logger.exception("Database error while processing jobs:")
                 session.rollback()
                 time.sleep(POLL_INTERVAL_SECONDS)
-            except Exception as error:
-                logger.exception(f"Unexpected error in worker: {error}")
+            except Exception:
+                logger.exception("Unexpected error in worker:")
                 session.rollback()
                 time.sleep(POLL_INTERVAL_SECONDS)
 

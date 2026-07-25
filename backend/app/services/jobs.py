@@ -1,5 +1,4 @@
 import logging
-from typing import List, Optional
 from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
@@ -25,7 +24,7 @@ class JobService:
         logger.debug(f"Retrieved job: {job_id} (status={job.status})")
         return job
 
-    def get_jobs(self, status: Optional[Status] = None, limit: int = 100) -> List[Job]:
+    def get_jobs(self, status: Status | None = None, limit: int = 100) -> list[Job]:
         statement = select(Job)
         if status is not None:
             statement = statement.where(Job.status == status)

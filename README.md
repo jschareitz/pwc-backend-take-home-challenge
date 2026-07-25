@@ -72,7 +72,7 @@ Persönliche Anmerkung:
   `docker compose -p load_test -f docker-compose.load.yml down -v`
 
 Hinweis:
-- Restliche Tests ohne Docker (dafür wird Python und uv benötigt): `uv run pytest -q`
+- Restliche Tests ohne Docker (dafür wird Python und uv benötigt): `uv run pytest -q` im backend Ordner ausführen.
 - Bei ungueltigen Request-Daten liefert die API HTTP 422 (FastAPI-Standard fuer Validierungsfehler), nicht HTTP 400.
 - Testfälle sind genauer in backend/tests/readme.md beschrieben.
 

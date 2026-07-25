@@ -55,7 +55,9 @@ class JobService:
         try:
             job = self.get_job(job_id)
             if job.status != Status.PENDING:
-                logger.warning(f"Cannot delete job {job_id}: status is {job.status} (must be PENDING)")
+                logger.warning(
+                    f"Cannot delete job {job_id}: status is {job.status} (must be PENDING)"
+                )
                 raise JobAlreadyStartedException(job_id)
             self.session.delete(job)
             self.session.commit()

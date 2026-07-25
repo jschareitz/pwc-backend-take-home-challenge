@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str | None = None
     POSTGRES_HOST: str = "db"
     POSTGRES_PORT: int = 5432
-    CORS_ORIGINS: list[str] = [] # Optional for later Frontend Connection
+    CORS_ORIGINS: list[str] = []  # Optional for later Frontend Connection
 
     @model_validator(mode="after")
     def build_database_url(self) -> "Settings":

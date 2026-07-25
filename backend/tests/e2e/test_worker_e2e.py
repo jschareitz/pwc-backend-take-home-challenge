@@ -6,6 +6,7 @@ import pytest
 
 pytestmark = pytest.mark.e2e
 
+
 def _wait_for_api(base_url: str, timeout_seconds: int = 120) -> None:
     deadline = time.time() + timeout_seconds
     last_error = None
@@ -18,14 +19,18 @@ def _wait_for_api(base_url: str, timeout_seconds: int = 120) -> None:
         except Exception as error:  # noqa: BLE001
             last_error = str(error)
         time.sleep(1)
-    pytest.fail(f"API did not become ready within {timeout_seconds}s. Last error: {last_error}")
+    pytest.fail(
+        f"API did not become ready within {timeout_seconds}s. Last error: {last_error}"
+    )
 
 
 @pytest.fixture(scope="module")
 def base_url() -> str:
     value = os.getenv("BASE_URL")
     if not value:
-        pytest.skip("BASE_URL not set. Run this test via docker-compose.e2e test service.")
+        pytest.skip(
+            "BASE_URL not set. Run this test via docker-compose.e2e test service."
+        )
     return value.rstrip("/")
 
 

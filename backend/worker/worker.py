@@ -62,11 +62,15 @@ def process_job(job: Job, session: Session) -> None:
         if job.retry_count < job.max_retries:
             job.status = Status.PENDING
             job.finished_at = None
-            logger.info(f"Job {job.id} failed, retry {job.retry_count}/{job.max_retries}")
+            logger.info(
+                f"Job {job.id} failed, retry {job.retry_count}/{job.max_retries}"
+            )
         else:
             job.status = Status.FAILED
             job.finished_at = datetime.now(timezone.utc)
-            logger.info(f"Job {job.id} permanently failed after initial attempt and {job.retry_count} retries")
+            logger.info(
+                f"Job {job.id} permanently failed after initial attempt and {job.retry_count} retries"
+            )
     else:
         job.status = Status.COMPLETED
         job.error_message = None

@@ -38,7 +38,10 @@ def _reset_jobs_table() -> Generator[None, None, None]:
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch) -> Generator[TestClient, None, None]:
     # Prevent startup from touching the production/Postgres engine during tests.
-    monkeypatch.setattr("app.main.create_db_and_tables", lambda: SQLModel.metadata.create_all(test_engine))
+    monkeypatch.setattr(
+        "app.main.create_db_and_tables",
+        lambda: SQLModel.metadata.create_all(test_engine),
+    )
     app.dependency_overrides[get_session] = _override_get_session
     with TestClient(app) as test_client:
         yield test_client

@@ -31,14 +31,18 @@ def _wait_for_api(base_url: str, timeout_seconds: int = 120) -> None:
         except Exception as error:  # noqa: BLE001
             last_error = str(error)
         time.sleep(1)
-    pytest.fail(f"API did not become ready within {timeout_seconds}s. Last error: {last_error}")
+    pytest.fail(
+        f"API did not become ready within {timeout_seconds}s. Last error: {last_error}"
+    )
 
 
 @pytest.fixture(scope="module")
 def base_url() -> str:
     value = os.getenv("BASE_URL")
     if not value:
-        pytest.skip("BASE_URL not set. Run this test via docker-compose.load load_test service.")
+        pytest.skip(
+            "BASE_URL not set. Run this test via docker-compose.load load_test service."
+        )
     return value.rstrip("/")
 
 
@@ -82,7 +86,9 @@ def test_job_submission_and_processing_under_load(base_url: str) -> None:
     ]
     assert not failed_creates, f"Create requests failed: {failed_creates[:5]}"
 
-    created_job_ids = [job_id for (_status, job_id, _body) in results if job_id is not None]
+    created_job_ids = [
+        job_id for (_status, job_id, _body) in results if job_id is not None
+    ]
     assert len(created_job_ids) == total_requests, (
         f"Expected {total_requests} created jobs, got {len(created_job_ids)}"
     )
@@ -94,14 +100,18 @@ def test_job_submission_and_processing_under_load(base_url: str) -> None:
         assert metrics_response.status_code == 200
         last_metrics = metrics_response.json()
 
-        finished_jobs = int(last_metrics["completed_jobs"]) + int(last_metrics["failed_jobs"])
+        finished_jobs = int(last_metrics["completed_jobs"]) + int(
+            last_metrics["failed_jobs"]
+        )
         if finished_jobs >= total_requests:
             break
 
         time.sleep(1)
 
     assert last_metrics is not None
-    finished_jobs = int(last_metrics["completed_jobs"]) + int(last_metrics["failed_jobs"])
+    finished_jobs = int(last_metrics["completed_jobs"]) + int(
+        last_metrics["failed_jobs"]
+    )
 
     assert finished_jobs >= total_requests, (
         "Timeout waiting for all jobs to reach terminal state. "

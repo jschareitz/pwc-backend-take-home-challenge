@@ -38,7 +38,9 @@ class MetricsService:
                 row.average_processing_duration_seconds or 0.0
             ),
         }
-        logger.debug(f"Calculated metrics: total={metrics['total_jobs']}, pending={metrics['pending_jobs']}, "
-                     f"processing={metrics['processing_jobs']}, completed={metrics['completed_jobs']}, "
-                     f"failed={metrics['failed_jobs']}")
+        logger.debug(
+            f"Calculated metrics: total={metrics['total_jobs']}, pending={metrics['pending_jobs']}, "
+            f"processing={metrics['processing_jobs']}, completed={metrics['completed_jobs']}, "
+            f"failed={metrics['failed_jobs']}"
+        )
         return metrics

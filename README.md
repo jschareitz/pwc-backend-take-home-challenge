@@ -6,6 +6,7 @@ Verwendeter Stack:
 
 
 > Warum hast du diesen Stack, diese Datenbank, diesen Queue-Mechanismus gewählt? Welche Alternativen hast du erwogen?
+
 Begründung für den API-Stack: 
 - Persönliche Kenntnisse in Python und FastAPI am höchsten.
   - außerdem praktische Features wie pydantic Validierung der Request- und Response-Daten und interaktive OpenAPI-Docs
@@ -30,7 +31,7 @@ Ein konkreter Tech-Stack dieser Alternative könnte wie folgt aussehen:
 Persönliche Anmerkung: 
 - Ein positiver Nebeneffekt war zusätzlich, dass ich mit dieser Entscheidung Gelegenheit hatte, mich näher mit Locking-Mechanismen zu beschäftigen.
 
-# Startanleitung: 
+# Startanleitung
 > Schritt für Schritt, wie man das System lokal zum Laufen bringt.
 
 ## Voraussetzungen
@@ -67,7 +68,7 @@ Persönliche Anmerkung:
 
 4. Aufräumen (Achtung, löscht mit `-v` auch Datenbank):
 
-    `docker compose -f docker-compose.yml down` bzw. mit `-v` um Datenbak ebenfalls zu löschen\
+    `docker compose -f docker-compose.yml down` bzw. mit `-v` um Datenbank ebenfalls zu löschen\
   `docker compose -p e2e_test -f docker-compose.e2e.yml down -v`\
   `docker compose -p load_test -f docker-compose.load.yml down -v`
 
@@ -113,7 +114,7 @@ Je mehr verschiedene Worker und je unterschiedlicher die Jobs werden, desto sinn
 - Auch die Dockerfiles und docker-compose files wurden zu großen Teilen KI-generiert und bei Bedarf angepasst.
 - Eine konkrete Implementierung, bei der ich Anpassungen vorgenommen habe, ist die Berechnung der Metriken im MetricsService.
 Folgender Screenshot zeigt auf der linken Seite die Funktion, wie sie zuerst generiert wurde. Hier wird für jede einzelne Metrik eine einzelne Select-Abfrage ausgeführt. Dort habe ich Optimierungspotenzial gesehen und die Berechnung der verschiedenen Metriken in einer einzigen Abfrage umgesetzt (siehe rechte Seite). 
-So entstehen weniger Datenbankzugriffe und die Anzahl der Jobs je Status kommen alle aus einem Zugriff, sodass hier keine Inkonsistenzen hinsichtlich der Gesamtzahl der Jobs entstehen sollten.
+So entstehen weniger Datenbankzugriffe und die Anzahl der Jobs je Status kommen alle aus einem Zugriff, sodass hier keine Inkonsistenzen hinsichtlich der Gesamtzahl der Jobs entstehen sollten.\
 ![Query-Optimierung](query_optimization.png "Query-Optimierung")
 - Andere Kleinigkeiten, die immer wieder angepasst werden mussten, sind die Verwendung von abgekündigten/veralteten Funktionen oder Schemas. Sei es der "version"-tag in der docker-compose.yml, deprecated pydantic Funktionen wie BaseModel.dict() (ersetzt durch BaseModel.model_dump()) und auch Connection-Strings für die Datenbank wurden in veralteten Varianten generiert (postgres:// -> postgresql://)
 
